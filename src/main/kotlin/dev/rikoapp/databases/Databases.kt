@@ -19,11 +19,11 @@ fun Application.configureDatabases() {
     }
 
     routing {
-        // Get database version
+        // Return database version
         get("/v1/status") {
             try {
                 val dbVersion = getDbVersion(dbConnection)
-                call.respond(HttpStatusCode.OK, mapOf("status" to dbVersion))
+                call.respond(HttpStatusCode.OK, mapOf("version" to dbVersion))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError)
             }
@@ -31,7 +31,6 @@ fun Application.configureDatabases() {
     }
 }
 
-// Read a city
 suspend fun getDbVersion(connection: Connection): String = withContext(Dispatchers.IO) {
     val statement = connection.prepareStatement(SELECT_DB_VERSION)
     val result = statement.executeQuery()
