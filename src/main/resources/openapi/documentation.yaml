@@ -1,0 +1,343 @@
+openapi: "3.0.3"
+info:
+  title: "DBS Assignment API"
+  description: "
+    This project contains implementation of endpoints for Database Systems assignment.
+    For more details, check out the [documentation](https://github.com/FIIT-Databases/dbs24-masarykova-str10-RikoAppDev?tab=readme-ov-file#dbs-assignment-api)."
+  version: "2.0.0"
+paths:
+  /v1/status:
+    get:
+      tags:
+        - v1
+      summary: "Get database server version"
+      description: "Retrieve the version of the database server."
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+              example:
+                version: "PostgreSQL 16.2, compiled by Visual C++ build 1937, 64-bit"
+  /v2/posts/{postId}/users:
+    get:
+      tags:
+        - v2
+      summary: "Get users for specific post"
+      description: "Retrieve a list of users for a specific post, ordered by the creation date of their comments."
+      parameters:
+        - name: "postId"
+          in: "path"
+          required: true
+          description: "ID of the post"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  items:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/User"
+              examples:
+                Example#1:
+                  value:
+                    items:
+                      - id: 1866388
+                        reputation: 1
+                        creationdate: "2023-12-01T00:05:24.3+00:00"
+                        displayname: "TomR."
+                        lastaccessdate: "2023-12-03T06:18:19.607+00:00"
+                        websiteurl: null
+                        location: null
+                        aboutme: null
+                        views: 1
+                        upvotes: 0
+                        downvotes: 0
+                        profileimageurl: null
+                        age: null
+                        accountid: 30035903
+  /v2/users/{userId}/friends:
+    get:
+      tags:
+        - v2
+      summary: "Get interacting users"
+      description: "Retrieve a list of users who have interacted with the specified user by commenting on his posts or posts he has commented on. Ordered by registration date, starting with the earliest registered users."
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          description: "ID of the user"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  items:
+                    type: "array"
+                    items:
+                      $ref: "#/components/schemas/User"
+              examples:
+                Example#1:
+                  value:
+                    items:
+                      - id: 482362
+                        reputation: 10581
+                        creationdate: "2015-08-11T17:42:36.267+02"
+                        displayname: "DrZoo"
+                        lastaccessdate: "2023-12-03T06:41:11.75+01"
+                        websiteurl: null
+                        location: null
+                        aboutme: null
+                        views: 1442
+                        upvotes: 555
+                        downvotes: 46
+                        profileimageurl: null
+                        age: null
+                        accountid: 2968677
+                      - id: 1076348
+                        reputation: 1
+                        creationdate: "2019-08-15T16:00:28.473+02"
+                        displayname: "Richard"
+                        lastaccessdate: "2019-09-10T16:57:48.527+02"
+                        websiteurl: null
+                        location: null
+                        aboutme: null
+                        views: 0
+                        upvotes: 0
+                        downvotes: 0
+                        profileimageurl: null
+                        age: null
+                        accountid: 16514661
+  /v2/tags/{tagname}/stats:
+    get:
+      tags:
+        - v2
+      summary: "Get percentage representation of tagged posts by day"
+      description: "Retrieve the percentage representation of posts with a specific tag for each day of the week, rounded to two decimal places."
+      parameters:
+        - name: "tagname"
+          in: "path"
+          required: true
+          description: "Name of the tag"
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  result:
+                    $ref: "#/components/schemas/TagPerDayOfWeek"
+              examples:
+                Example#1:
+                  value:
+                    result:
+                      monday: 4.71
+                      tuesday: 4.69
+                      wednesday: 4.63
+                      thursday: 4.57
+                      friday: 4.67
+                      saturday: 4.98
+                      sunday: 4.88
+  /v2/posts:
+    get:
+      tags:
+        - v2
+      summary: "Get posts with pagination and search options"
+      description: |
+        - duration&limit - Retrieve a list of the latest resolved posts within a specified duration, limited by the number of items.
+        - limit&query - Retrieve a list of posts, ordered from newest to oldest, with assigned tags. Supports limit and query parameters for pagination and search.
+      parameters:
+        - name: "duration"
+          in: "query"
+          description: "Duration in minutes for which posts were open"
+          schema:
+            type: "integer"
+        - name: "limit"
+          in: "query"
+          description: "Limit the number of items in the response"
+          schema:
+            type: "integer"
+        - name: "query"
+          in: "query"
+          description: "Search string for posts.title and posts.body"
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  items:
+                    type: "array"
+                    items:
+                      anyOf:
+                        - $ref: "#/components/schemas/PostWithDuration"
+                        - $ref: "#/components/schemas/PostWithTags"
+              examples:
+                Example#1-duration&limit:
+                  value:
+                    items:
+                      - id: 1818849
+                        creationdate: "2023-11-30T16:55:32.137+01"
+                        viewcount: 22924
+                        lasteditdate: null
+                        lastactivitydate: "2023-11-30T16:55:32.137+01"
+                        title: "Why is my home router address is 10.x.x.x and not 100.x.x.x..."
+                        closeddate: "2023-11-30T16:59:23.56+01"
+                        duration: 3.86
+                      - id: 1818386
+                        creationdate: "2023-11-27T18:26:57.617+01"
+                        viewcount: 19
+                        lasteditdate: null
+                        lastactivitydate: "2023-11-27T18:26:57.617+01"
+                        title: "Are there any libraries for parsing DWG files with LGPL, MIT, Apache, BSD?"
+                        closeddate: "2023-11-27T18:29:18.947+01"
+                        duration: 2.36
+                Example#2-limit&query:
+                  value:
+                    items:
+                      - id: 1819160
+                        creationdate: "2023-12-03 05:22:43.587+01"
+                        viewcount: 7
+                        lasteditdate: null
+                        lastactivitydate: "2023-12-03 05:22:43.587+01"
+                        title: "Keyboard not working on Kali Linux"
+                        body: "I have recently installed VirtualBox on my Windows 10 and trying to run Linux Ubuntu and Kali. Everything working on Ubuntu without any issue, but when I am running Kali, it is not taking keyboard (Samsung Bluetooth 500) input. Please, can anyone help me out here. Many thanks in advance!"
+                        answercount: 0
+                        closeddate: null
+                        tags:
+                          - "virtual-machine"
+components:
+  schemas:
+    Version:
+      type: "object"
+      properties:
+        version:
+          type: "string"
+          description: "Information returned by the database server."
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        reputation:
+          type: "integer"
+        creationdate:
+          type: "string"
+          format: "date-time"
+        displayname:
+          type: "string"
+        lastaccessdate:
+          type: "string"
+          format: "date-time"
+        websiteurl:
+          type: [ "string", "null" ]
+        location:
+          type: [ "string", "null" ]
+        aboutme:
+          type: [ "string", "null" ]
+        views:
+          type: "integer"
+        upvotes:
+          type: "integer"
+        downvotes:
+          type: "integer"
+        profileimageurl:
+          type: [ "string", "null" ]
+        age:
+          type: [ "integer", "null" ]
+        accountid:
+          type: [ "integer", "null" ]
+    TagPerDayOfWeek:
+      type: "object"
+      properties:
+        monday:
+          type: "number"
+          format: "double"
+        tuesday:
+          type: "number"
+          format: "double"
+        wednesday:
+          type: "number"
+          format: "double"
+        thursday:
+          type: "number"
+          format: "double"
+        friday:
+          type: "number"
+          format: "double"
+        saturday:
+          type: "number"
+          format: "double"
+        sunday:
+          type: "number"
+          format: "double"
+    PostWithDuration:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        creationdate:
+          type: "string"
+          format: "date-time"
+        viewcount:
+          type: "integer"
+        lasteditdate:
+          type: [ "string", "null" ]
+          format: "date-time"
+        lastactivitydate:
+          type: "string"
+          format: "date-time"
+        title:
+          type: "string"
+        closeddate:
+          type: "string"
+          format: "date-time"
+        duration:
+          type: "number"
+          format: "double"
+    PostWithTags:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        creationdate:
+          type: "string"
+        viewcount:
+          type: "integer"
+        lasteditdate:
+          type: [ "string", "null" ]
+        lastactivitydate:
+          type: "string"
+        title:
+          type: "string"
+        body:
+          type: "string"
+        answercount:
+          type: "integer"
+        closeddate:
+          type: [ "string", "null" ]
+        tags:
+          type: "array"
+          items:
+            type: "string"
