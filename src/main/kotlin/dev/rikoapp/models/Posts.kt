@@ -77,3 +77,30 @@ data class PostsWithTags(
         return result
     }
 }
+
+@Serializable
+data class PostBadges(
+    val id: Int,
+    val title: String?,
+    val type: String,
+    val created_at: Instant,
+    val position: Int
+)
+
+@Serializable
+data class PostsWithCommentsInfo(
+    val post_id: Int,
+    val title: String?,
+    val displayname: String?,
+    val text: String?,
+    val created_at: Instant,
+    val diff: String,
+    val avg: String
+)
+
+@Serializable
+data class PostThread(
+    val displayname: String?,
+    val body: String?,
+    val created_at: Instant
+)

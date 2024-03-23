@@ -5,6 +5,7 @@ import dev.rikoapp.databases.DatabaseSingleton
 import dev.rikoapp.endpoints.setupSwagger
 import dev.rikoapp.endpoints.setupV1Routing
 import dev.rikoapp.endpoints.setupV2Routing
+import dev.rikoapp.endpoints.setupV3Routing
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -48,5 +49,6 @@ fun Application.module() {
 
     setupV1Routing(dbConnection, dbSchema)
     setupV2Routing(dbConnection, dbSchema)
+    setupV3Routing(dbConnection, dbSchema)
     setupSwagger()
 }
