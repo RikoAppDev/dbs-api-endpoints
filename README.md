@@ -8,6 +8,14 @@ This project contains the implementation of endpoints for the Database Systems a
 
 ## Endpoints
 
+- Assignment 1: [v1 Endpoint](#v1-endpoint)
+- Assignment 2: [v2 Endpoints](#v2-endpoints)
+- Assignment 3: [v3 Endpoints](#v3-endpoints)
+
+---
+
+## V1 Endpoint
+
 ### 1. Retrieve Database Server Version
 
 - **Endpoint:** `/v1/status`
@@ -24,7 +32,9 @@ This project contains the implementation of endpoints for the Database Systems a
       ```
 - SQL query: [`SELECT_DB_VERSION`](#1-select_db_version)
 
-### 2. Retrieve Users for a Specific Post
+## V2 Endpoints
+
+### 1. Retrieve Users for a Specific Post
 
 - **Endpoint:** `/v2/posts/{postId}/users`
 - **Method:** `GET`
@@ -58,9 +68,9 @@ This project contains the implementation of endpoints for the Database Systems a
         ]
       }
       ```
-- SQL query: [`SELECT_ALL_COMMENTERS`](#2-select_all_commenters)
+- SQL query: [`SELECT_ALL_COMMENTERS`](#1-select_all_commenters)
 
-### 3. Retrieve Users (Friends) for a Specific User
+### 2. Retrieve Users (Friends) for a Specific User
 
 - **Endpoint:** `/v2/users/{userId}/friends`
 - **Method:** `GET`
@@ -111,9 +121,9 @@ This project contains the implementation of endpoints for the Database Systems a
         ]
       }
       ```
-- SQL query: [`SELECT_ALL_FRIENDS`](#3-select_all_friends)
+- SQL query: [`SELECT_ALL_FRIENDS`](#2-select_all_friends)
 
-### 4. Retrieve Tag Statistics
+### 3. Retrieve Tag Statistics
 
 - **Endpoint:** `/v2/tags/{tagname}/stats`
 - **Method:** `GET`
@@ -139,9 +149,9 @@ This project contains the implementation of endpoints for the Database Systems a
         }
       }
       ```
-- SQL query: [`SELECT_TAG_DAYS_INFO`](#4-select_tag_days_info)
+- SQL query: [`SELECT_TAG_DAYS_INFO`](#3-select_tag_days_info)
 
-### 5. Retrieve Posts with Various Parameters
+### 4. Retrieve Posts with Various Parameters
 
 - **Endpoint:** `/v2/posts`
 - **Method:** `GET`
@@ -204,47 +214,253 @@ This project contains the implementation of endpoints for the Database Systems a
         ]
       }
       ```
-- SQL query for duration&limit: [`SELECT_TAG_DAYS_INFO`](#5-select_all_posts_with_duration)
-- SQL query for limit&query: [`SELECT_TAG_DAYS_INFO`](#6-select_all_posts_with_tags)
+- SQL query for duration&limit: [`SELECT_TAG_DAYS_INFO`](#4-select_all_posts_with_duration)
+- SQL query for limit&query: [`SELECT_TAG_DAYS_INFO`](#5-select_all_posts_with_tags)
+
+## V3 Endpoints
+
+### 1. Retrieve User Badges with Previous Posts
+
+- **Endpoint:** `/v3/users/{userId}/badge_history`
+- **Method:** `GET`
+- **Description:** Retrieve a list of posts along with the badges acquired by the users who authored those previous
+  posts.
+- **Parameters:**
+    - `userId` (path, required, integer): ID of the user
+- **Response:**
+    - Status: 200 OK
+    - Content Type: `application/json`
+    - Schema: [PostBadges](#postbadges)
+    - Example for `/v3/users/1465/badge_history`:
+      ```json
+      {
+        "items": [
+          {
+            "id": 2500,
+            "title": "Can Cat6 UTP stranded cable fit regular Cat6 Jacks?",
+            "type": "post",
+            "created_at": "2009-07-15T13:40:20.667Z",
+            "position": 1
+          },
+          {
+            "id": 2269,
+            "title": "Student",
+            "type": "badge",
+            "created_at": "2009-07-15T13:42:30.973Z",
+            "position": 1
+          },
+          {
+            "id": 2540,
+            "title": null,
+            "type": "post",
+            "created_at": "2009-07-15T13:47:40.243Z",
+            "position": 2
+          },
+          {
+            "id": 2341,
+            "title": "Editor",
+            "type": "badge",
+            "created_at": "2009-07-15T13:57:30.973Z",
+            "position": 2
+          }
+        ]
+      }    
+      ```
+- SQL query: [`SELECT_ANALYSED_USER`](#1-select_analysed_user)
+
+### 2. Retrieve Post Comments with Average Response Time
+
+- **Endpoint:** `/v3/tags/{tag}/comments?count={count}`
+- **Method:** `GET`
+- **Description:** Retrieve a list of comments with calculated average response time between individual comments within
+  posts that have more than the specified count of comments. The output includes how the average response time changed
+  with increasing comments.
+- **Parameters:**
+    - `tag` (path, required, string): Name of the tag
+    - `count` (query, required, integer): More than number of comments within posts
+- **Response:**
+    - Status: 200 OK
+    - Content Type: `application/json`
+    - Schema: [PostsWithCommentsInfo](#postswithcommentsinfo)
+    - Example for `/v3/tags/alarm-clock/comments?count=2`:
+      ```json
+      {
+        "items": [
+          {
+            "post_id": 855132,
+            "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
+            "displayname": "Ramhound",
+            "text": "Use a different application.",
+            "created_at": "2014-12-21T01:10:25.533Z",
+            "diff": "00:25:51.723",
+            "avg": "00:25:51.723"
+          },
+          {
+            "post_id": 855132,
+            "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
+            "displayname": "Tyson",
+            "text": "I'll bet there is a registry tweak for this windows 8 pre-installed app, but I couldn't locate it",
+            "created_at": "2014-12-21T02:35:21.087Z",
+            "diff": "01:24:55.554",
+            "avg": "00:55:23.6385"
+          },
+          {
+            "post_id": 855132,
+            "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
+            "displayname": "Omar",
+            "text": "@Ramhound Could you please recommend any app similar to Windows' application? I love this good looking Windows app, and I won't install any other app if it really deserves taking my computer resources and have similar capabilities to the Windows' app.",
+            "created_at": "2014-12-21T03:07:26.967Z",
+            "diff": "00:32:05.88",
+            "avg": "00:47:37.719"
+          },
+          {
+            "post_id": 1759203,
+            "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
+            "displayname": "John",
+            "text": "Not here on any Windows 10 / 11 machine.  Run DISM / SFC and test .......   (1) Open cmd.exe with Run as Administrator.\n(2) DISM.exe /Online /Cleanup-image /StartComponentCleanup\n(3) DISM.exe /Online /Cleanup-Image /Restorehealth\n(4) SFC /SCANNOW\n(5) Restart when all the above is complete and test.",
+            "created_at": "2022-12-23T13:50:46.843Z",
+            "diff": "03:05:42.616",
+            "avg": "03:05:42.616"
+          },
+          {
+            "post_id": 1759203,
+            "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
+            "displayname": "Nagev",
+            "text": "Thanks, need some time to research and understand that before I try it.",
+            "created_at": "2022-12-23T17:59:11.300Z",
+            "diff": "04:08:24.457",
+            "avg": "03:37:03.5365"
+          },
+          {
+            "post_id": 1759203,
+            "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
+            "displayname": "John",
+            "text": "DISM and SFC is not at all risky to run .  SFC may take some time if much to repair",
+            "created_at": "2022-12-23T23:10:51.883Z",
+            "diff": "05:11:40.583",
+            "avg": "04:08:35.885333"
+          }
+        ]
+      }
+      ```
+
+- SQL query: [`SELECT_ALL_SUITABLE_POSTS_FOR_TAG`](#2-select_all_suitable_posts_for_tag)
+
+### 3. Retrieve n-th Comments for Post with Tag
+
+- **Endpoint:** `/v3/tags/{tagname}/comments/{position}?limit={limit}`
+- **Method:** `GET`
+- **Description:** Retrieve a list comments for posts with the specified tag, which were created as the n-th `position`
+  comments in order, sorted by creation date with a limit of `limit`.
+- **Parameters:**
+    - `tagname` (path, required, string): Tag name for filtering posts
+    - `position` (path, required, integer): Position of the comment in order
+    - `limit` (query, required, integer): Limit for the number of comments returned
+- **Response:**
+    - Status: 200 OK
+    - Content Type: `application/json`
+    - Schema: [Comments](#comments)
+    - Example for `/v3/tags/linux/comments/2?limit=1`:
+      ```json
+      {
+        "items": [
+          {
+            "id": 745427,
+            "displayname": "Oliver Salzburg",
+            "body": "<p>I am running Kubuntu Hardy Heron, with a dual monitor setup, and have VirtualBox on it running Windows XP in seamless mode.</p>\n\n<p>My problem is, I can't get VirtualBox to extend to the second monitor. \nHow can this be achieved?</p>\n",
+            "text": "http://ubuntuforums.org/showthread.php?t=433359",
+            "score": 0,
+            "position": 2
+          }
+        ]
+      }
+      ```
+
+- SQL query: [`SELECT_NTH_COMMENTS_FOR_TAG`](#3-select_nth_comments_for_tag)
+
+### 4. Retrieve Thread for Post
+
+- **Endpoint:** `/v3/posts/{postid}?limit={limit}`
+- **Method:** `GET`
+- **Description:** Retrieve a thread for the post with the specified ID `postid`. The thread starts with the
+  post itself and continues with child posts where `postid` is the `parentid`, sorted by creation date from oldest to
+  newest.
+- **Parameters:**
+    - `postid` (path, required, integer): ID of the post
+    - `limit` (query, required, integer): Limit for the number of thread posts returned
+- **Response:**
+    - Status: 200 OK
+    - Content Type: `application/json`
+    - Schema: [PostThread](#postthread)
+    - Example for `/v3/posts/2154?limit=2`:
+      ```json
+        {
+          "items": [
+            {
+              "displayname": "Eugene M",
+              "body": "<p>So, I'm a technology guy and sometimes I have to troubleshoot a home network, including my own. I make sure the wires are in securely and that the lights suggest there's an actual internet connection. Usually after that point I just reset the router( and possibly the cable modem) and that fixes things most of the time.</p>\n\n<p>The problem is I'd like to know what sort of issue I could possibly be fixing by resetting the router.</p>\n\n<p>EDIT: Just to clarify, I was speaking more about reset as in turning the router off and on. Still, any information about a hard reset(paperclip in the hole) is useful. So the more accurate term would probably be restarting </p>\n\n<p>Also, personally I usually have to deal with D-Link or Linksys home routers. I generally only bother messing around with stuff if I can't make a connection to the internet at all.</p>\n",
+              "created_at": "2009-07-15T12:51:57.340Z"
+            },
+            {
+              "displayname": "Ólafur Waage",
+              "body": "<p>Every router has it's original firmware stored somewhere on it.</p>\n\n<p>When you reset the router you overwrite the current firmware and config with the original one. What usually is fixing the problem is that the config is overwritten with the original one. But in some cases you have an updated router that isn't working for some reason.</p>\n",
+              "created_at": "2009-07-15T12:54:48.507Z"
+            }
+          ]
+        }
+      ```
+
+- SQL query: [`SELECT_WHOLE_THREAD`](#4-select_whole_thread)
 
 ---
 
-## Queries Descriptions
+## Queries
+
+- Assignment 1: [v1 Query](#v1-query)
+- Assignment 2: [v2 Queries](#v2-queries)
+- Assignment 3: [v3 Queries](#v3-queries)
+
+---
+
+## V1 Query
 
 ### 1. `SELECT_DB_VERSION`
 
-- _Description:_ Retrieves the version of the PostgreSQL database.
-- _Use Case:_ Checking the current database version.
+- ***Description:*** Retrieves the version of the PostgreSQL database.
+- ***Use Case:*** Checking the current database version.
      ```postgresql
      select version();
      ```
 
-### 2. `SELECT_ALL_COMMENTERS`
+## V2 Queries
 
-- _Description:_ This PostgreSQL query retrieves user details for individuals who have commented on a specific post,
+### 1. `SELECT_ALL_COMMENTERS`
+
+- ***Description:*** This PostgreSQL query retrieves user details for individuals who have commented on a specific post,
   capturing the maximum creation date of their comments. It utilizes `JOIN` operations to connect the comments, posts,
   and users tables based on corresponding IDs. The `WHERE` clause filters the results to a specific post ID, and
   the `GROUP BY` clause ensures each user's information is provided only once. The final result is ordered in descending
   order based on the latest comment creation date.
-- _Use Case:_ Identifying users who engaged with a particular post.
+- ***Use Case:*** Identifying users who engaged with a particular post.
    ```postgresql
    select u.*, max(c.creationdate) first_comment_date
    from comments c
           join posts p on p.id = c.postid
           join users u on c.userid = u.id
-   where p.id = 718
+   where p.id = ?
    group by u.id, reputation, u.creationdate, displayname, lastaccessdate, websiteurl, location, aboutme, views, upvotes,
             downvotes, profileimageurl, age, accountid
    order by first_comment_date desc;
    ```
 
-### 3. `SELECT_ALL_FRIENDS`
+### 2. `SELECT_ALL_FRIENDS`
 
-- _Description:_ This PostgreSQL query retrieves user details for individuals who have interacted with a specified user
+- ***Description:*** This PostgreSQL query retrieves user details for individuals who have interacted with a specified
+  user
   by either commenting on their posts or posts they have commented on. It uses `UNION` to combine results from two
   separate conditions: first, where the user ID matches the commenter ID, and second, where the user ID matches the
   owner user ID of the post. The final result is ordered based on the creation date of the user account.
-- _Use Case:_ Finding friends based on mutual interactions.
+- ***Use Case:*** Finding friends based on mutual interactions.
    ```postgresql
    select u.*
    from comments c
@@ -260,14 +476,15 @@ This project contains the implementation of endpoints for the Database Systems a
    order by creationdate;
    ```
 
-### 4. `SELECT_TAG_DAYS_INFO`
+### 3. `SELECT_TAG_DAYS_INFO`
 
-- _Description:_ This PostgreSQL query calculates the percentage representation of posts with a specific tag for each
+- ***Description:*** This PostgreSQL query calculates the percentage representation of posts with a specific tag for
+  each
   day of the week. It utilizes Common Table Expressions (CTEs): `tags_count` counts the number of posts with the given
   tag for each day, while `total_count` calculates the total number of posts for each day. The final query then computes
   the tag percentage by dividing the tag count by the total count, rounding to two decimal places, and ordering the
   results by day of the week.
-- _Use Case:_ Analyzing the distribution of posts with a specific tag throughout the week.
+- ***Use Case:*** Analyzing the distribution of posts with a specific tag throughout the week.
    ```postgresql
    with tags_count as (select extract(dow from creationdate) day_of_week,
                               count(p.id)                    tag_count
@@ -287,15 +504,15 @@ This project contains the implementation of endpoints for the Database Systems a
    order by day_of_week;
    ```
 
-### 5. `SELECT_ALL_POSTS_WITH_DURATION`
+### 4. `SELECT_ALL_POSTS_WITH_DURATION`
 
-- _Description:_ This PostgreSQL query retrieves a list of the latest resolved posts, which were open for a maximum
+- ***Description:*** This PostgreSQL query retrieves a list of the latest resolved posts, which were open for a maximum
   duration specified in minutes. The `WHERE` clause filters posts based on the condition that their duration of
   openness (calculated as the difference in minutes between closed and creation dates) is less than the specified
   threshold. The result is limited to the specified number of posts and sorted in descending order based on
   the `closeddate`. Each post in the list includes information such as id, creation date, view count, last edit date,
   last activity date, title, closed date, and the duration of unresolved in minutes.
-- _Use Case:_ Obtaining latest resolved posts that were open for a specific duration.
+- ***Use Case:*** Obtaining latest resolved posts that were open for a specific duration.
    ```postgresql
    select p.id,
        p.creationdate,
@@ -311,9 +528,9 @@ This project contains the implementation of endpoints for the Database Systems a
    limit ?;
    ```
 
-### 6. `SELECT_ALL_POSTS_WITH_TAGS`
+### 5. `SELECT_ALL_POSTS_WITH_TAGS`
 
-- _Description:_
+- ***Description:***
   This PostgreSQL query uses a CTE named `posts_table` to filter posts based on case-insensitive
   matches in the title or body, using the `ILIKE` operator. The CTE limits and filters the result to a specified number
   of records and orders them by creation date in descending order. The main query then selects details from
@@ -321,7 +538,7 @@ This project contains the implementation of endpoints for the Database Systems a
   view of posts, including their ID, creation date, view count, title, body, answer count, and an array of associated
   tags. The results are grouped by post attributes and ordered by creation date in descending order, presenting a
   consolidated overview of posts with their respective tags.
-- _Use Case:_ Searching and retrieving posts with specific tags and filtering by a search query.
+- ***Use Case:*** Searching and retrieving posts with specific tags and filtering by a search query.
    ```postgresql
    with posts_table as (select p.id,
                                p.creationdate,
@@ -344,6 +561,133 @@ This project contains the implementation of endpoints for the Database Systems a
    group by p.id, creationdate, viewcount, lasteditdate, lastactivitydate, title, body, answercount, closeddate
    order by p.creationdate desc;
    ```
+
+## V3 Queries
+
+### 1. `SELECT_ANALYSED_USER`
+
+- ***Description:***
+  This PostgreSQL query selects posts and badges associated with a specific `userid` and analyzes the sequence
+  of their creation dates. It utilizes window functions `lag()` and `lead()` to identify the transition points between
+  posts and badges. The query then filters and orders the results based on whether a post is followed by a badge or vice
+  versa, providing insight into the user's activity timeline and their badge obtainment.
+- ***Use Case:*** Analyzing the activity history of a user by examining the sequence of posts and badges they have
+  created or received.
+
+  ```postgresql
+  select post_id,
+         title,
+         type,
+         created_at,
+         row_number() over (partition by type order by created_at) position
+  from (select *,
+               lag(type) over (order by created_at)  before_type,
+               lead(type) over (order by created_at) after_type
+        from (select p.id           post_id,
+                     p.title        title,
+                     'post'         type,
+                     p.creationdate created_at
+              from posts p
+              where p.owneruserid = ?
+              union all
+              select b.id    badge_id,
+                     b.name  title,
+                     'badge' type,
+                     b.date  created_at
+              from badges b
+              where b.userid = ?) user_history) before_after_types
+  where type = 'post' and after_type = 'badge'
+     or type = 'badge' and before_type = 'post'
+  order by created_at;
+  ```
+
+### 2. `SELECT_ALL_SUITABLE_POSTS_FOR_TAG`
+
+- ***Description:***
+  This PostgreSQL query retrieves posts associated with a specified `tagname` that have more than a certain number
+  of comments `comment_count`. It calculates the time difference between consecutive comments `time_diff` for each
+  post and computes the average time difference using `avg()` window function over the comment sequence. The query
+  filters posts based on the specified tag, groups them by post attributes, and selects posts with a comment count
+  exceeding the threshold.
+- ***Use Case:*** Extracting posts with a particular tag that have generated significant discussion, allowing for
+  further analysis of comment activity.
+
+  ```postgresql
+  select post_id,
+         title,
+         displayname,
+         text,
+         created_at,
+         time_diff::text                                                      diff,
+         avg(time_diff) over (partition by post_id order by created_at)::text avg
+  from (select p.id                                                              post_id,
+               p.title,
+               u.displayname,
+               c.text,
+               c.creationdate                                                    created_at,
+               c.creationdate - lag(c.creationdate, 1, p.creationdate)
+                                over (partition by p.id order by c.creationdate) time_diff,
+               count(c.id) over (partition by p.id)                              comment_count
+        from posts p
+                 join post_tags pt on p.id = pt.post_id
+                 join tags t on t.id = pt.tag_id
+                 join comments c on p.id = c.postid
+                 left join users u on u.id = c.userid
+        where t.tagname = ?
+        group by p.id, p.title, u.displayname, c.text, c.creationdate, c.id) comments
+  where comment_count > ?;
+  ```
+
+### 3. `SELECT_NTH_COMMENTS_FOR_TAG`
+
+- ***Description:***
+  This PostgreSQL query retrieves the comments associated with posts tagged with a specified `tagname` that are
+  the n-th comment `position` in their respective post sequences. It selects comment attributes such as ID,
+  author display name (`displayname`), comment body (`body`), comment text (`text`), score, and position within the
+  post.
+- ***Use Case:*** Fetching specific comments, such as the second comment, for posts with a particular tag for analysis
+  or review.
+
+  ```postgresql
+  select id, displayname, body, text, score, position
+  from (select c.id,
+               u.displayname,
+               p.body,
+               c.text,
+               c.score,
+               row_number() over (partition by p.id) position
+        from comments c
+                 join posts p on p.id = c.postid
+                 join post_tags pt on p.id = pt.post_id
+                 join tags t on t.id = pt.tag_id
+                 join users u on u.id = c.userid
+        where t.tagname = ?
+        group by p.id, p.creationdate, c.creationdate, c.id, u.displayname, p.body
+        order by p.creationdate, c.creationdate) help
+  where position = ?
+  limit ?;
+  ```
+
+### 4. `SELECT_WHOLE_THREAD`
+
+- ***Description:***
+  This PostgreSQL query retrieves the entire thread associated with a specific post `post_id`. It selects
+  user display names (`displayname`), post bodies (`body`), and creation dates (`created_at`) for both the specified
+  post and its parent post, ordering the results by creation date and limiting the output to the first `limit`
+  records.
+- ***Use Case:*** Fetching the conversation thread for a particular post, including both the original post and
+  its subsequent posts, for detailed analysis or review.
+
+  ```postgresql
+  select distinct u.displayname, p.body, p.creationdate created_at
+  from comments c
+           join posts p on p.id = c.postid
+           join public.users u on u.id = p.owneruserid
+  where p.id = ?
+     or p.parentid = ?
+  order by p.creationdate
+  limit ?;
+  ```
 
 ---
 
@@ -399,6 +743,39 @@ This project contains the implementation of endpoints for the Database Systems a
 - `answercount` (integer)
 - `closeddate` (string or null)
 - `tags` (array of strings)
+
+### PostBadges
+
+- `id` (integer)
+- `title` (string or null)
+- `type` (string)
+- `created_at` (string, date-time)
+- `position` (integer)
+
+### PostsWithCommentsInfo
+
+- `post_id` (integer)
+- `title` (string or null)
+- `displayname` (string or null)
+- `text` (string or null)
+- `created_at` (string, date-time)
+- `diff` (string)
+- `avg` (string)
+
+### Comments
+
+- `id` (integer)
+- `displayname` (string or null)
+- `body` (string or null)
+- `text` (string or null)
+- `score` (integer)
+- `position` (integer)
+
+### PostThread
+
+- `displayname` (string or null)
+- `body` (string or null)
+- `created_at` (string, date-time)
 
 ---
 

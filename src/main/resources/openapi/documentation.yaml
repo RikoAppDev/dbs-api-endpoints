@@ -227,6 +227,200 @@ paths:
                         closeddate: null
                         tags:
                           - "virtual-machine"
+  /v3/users/{userId}/badge_history:
+    get:
+      tags:
+        - v3
+      summary: "Retrieve User Badges with Previous Posts"
+      description: "Retrieve a list of posts along with the badges acquired by the users who authored those previous posts."
+      parameters:
+        - name: "userId"
+          in: "path"
+          required: true
+          description: "ID of the user"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostBadges"
+              examples:
+                Example:
+                  value:
+                    items:
+                      - id: 2500
+                        title: "Can Cat6 UTP stranded cable fit regular Cat6 Jacks?"
+                        type: "post"
+                        created_at: "2009-07-15T13:40:20.667Z"
+                        position: 1
+                      - id: 2269
+                        title: "Student"
+                        type: "badge"
+                        created_at: "2009-07-15T13:42:30.973Z"
+                        position: 1
+                      - id: 2540
+                        title: null
+                        type: "post"
+                        created_at: "2009-07-15T13:47:40.243Z"
+                        position: 2
+                      - id: 2341
+                        title: "Editor"
+                        type: "badge"
+                        created_at: "2009-07-15T13:57:30.973Z"
+                        position: 2
+  /v3/tags/{tag}/comments:
+    get:
+      tags:
+        - v3
+      summary: "Retrieve Post Comments with Average Response Time"
+      description: "Retrieve a list of comments with calculated average response time between individual comments within posts that have more than the specified count of comments. The output includes how the average response time changed with increasing comments."
+      parameters:
+        - name: "tag"
+          in: "path"
+          required: true
+          description: "Name of the tag"
+          schema:
+            type: "string"
+        - name: "count"
+          in: "query"
+          required: true
+          description: "More than number of comments within posts"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostsWithCommentsInfo"
+              examples:
+                Example:
+                  value:
+                    items:
+                      - post_id: 855132
+                        title: "Set Windows 8.1 Alarms app to ring forever till the user stop it"
+                        displayname: "Ramhound"
+                        text: "Use a different application."
+                        created_at: "2014-12-21T01:10:25.533Z"
+                        diff: "00:25:51.723"
+                        avg: "00:25:51.723"
+                      - post_id: 855132
+                        title: "Set Windows 8.1 Alarms app to ring forever till the user stop it"
+                        displayname: "Tyson"
+                        text: "I'll bet there is a registry tweak for this windows 8 pre-installed app, but I couldn't locate it"
+                        created_at: "2014-12-21T02:35:21.087Z"
+                        diff: "01:24:55.554"
+                        avg: "00:55:23.6385"
+                      - post_id: 855132
+                        title: "Set Windows 8.1 Alarms app to ring forever till the user stop it"
+                        displayname: "Omar"
+                        text: "@Ramhound Could you please recommend any app similar to Windows' application? I love this good looking Windows app, and I won't install any other app if it really deserves taking my computer resources and have similar capabilities to the Windows' app."
+                        created_at: "2014-12-21T03:07:26.967Z"
+                        diff: "00:32:05.88"
+                        avg: "00:47:37.719"
+                      - post_id: 1759203
+                        title: "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?"
+                        displayname: "John"
+                        text: "Not here on any Windows 10 / 11 machine.  Run DISM / SFC and test .......   (1) Open cmd.exe with Run as Administrator.\n(2) DISM.exe /Online /Cleanup-image /StartComponentCleanup\n(3) DISM.exe /Online /Cleanup-Image /Restorehealth\n(4) SFC /SCANNOW\n(5) Restart when all the above is complete and test."
+                        created_at: "2022-12-23T13:50:46.843Z"
+                        diff: "03:05:42.616"
+                        avg: "03:05:42.616"
+                      - post_id: 1759203
+                        title: "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?"
+                        displayname: "Nagev"
+                        text: "Thanks, need some time to research and understand that before I try it."
+                        created_at: "2022-12-23T17:59:11.300Z"
+                        diff: "04:08:24.457"
+                        avg: "03:37:03.5365"
+                      - post_id: 1759203
+                        title: "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?"
+                        displayname: "John"
+                        text: "DISM and SFC is not at all risky to run .  SFC may take some time if much to repair"
+                        created_at: "2022-12-23T23:10:51.883Z"
+                        diff: "05:11:40.583"
+                        avg: "04:08:35.885333"
+  /v3/tags/{tagname}/comments/{position}:
+    get:
+      tags:
+        - v3
+      summary: "Retrieve n-th Comments for Post with Tag"
+      description: "Retrieve a list comments for posts with the specified tag, which were created as the n-th `position` comments in order, sorted by creation date with a limit of `limit`."
+      parameters:
+        - name: "tagname"
+          in: "path"
+          required: true
+          description: "Tag name for filtering posts"
+          schema:
+            type: "string"
+        - name: "position"
+          in: "path"
+          required: true
+          description: "Position of the comment in order"
+          schema:
+            type: "integer"
+        - name: "limit"
+          in: "query"
+          required: true
+          description: "Limit for the number of comments returned"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comments"
+              examples:
+                Example:
+                  value:
+                    items:
+                      - id: 745427
+                        displayname: "Oliver Salzburg"
+                        body: "<p>I am running Kubuntu Hardy Heron, with a dual monitor setup, and have VirtualBox on it running Windows XP in seamless mode.</p>\n\n<p>My problem is, I can't get VirtualBox to extend to the second monitor.  How can this be achieved?</p>\n"
+                        text: "http://ubuntuforums.org/showthread.php?t=433359"
+                        score: 0
+                        position: 2
+  /v3/posts/{postid}:
+    get:
+      tags:
+        - v3
+      summary: "Retrieve Thread for Post"
+      description: "Retrieve a thread for the post with the specified ID `postid`. The thread starts with the post itself and continues with child posts where `postid` is the `parentid`, sorted by creation date from oldest to newest."
+      parameters:
+        - name: "postid"
+          in: "path"
+          required: true
+          description: "ID of the post"
+          schema:
+            type: "integer"
+        - name: "limit"
+          in: "query"
+          required: true
+          description: "Limit for the number of thread posts returned"
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostThread"
+              examples:
+                Example:
+                  value:
+                    items:
+                      - displayname: "Eugene M"
+                        body: "<p>So, I'm a technology guy and sometimes I have to troubleshoot a home network, including my own. I make sure the wires are in securely and that the lights suggest there's an actual internet connection. Usually after that point I just reset the router( and possibly the cable modem) and that fixes things most of the time.</p>\n\n<p>The problem is I'd like to know what sort of issue I could possibly be fixing by resetting the router.</p>\n\n<p>EDIT: Just to clarify, I was speaking more about reset as in turning the router off and on. Still, any information about a hard reset(paperclip in the hole) is useful. So the more accurate term would probably be restarting </p>\n\n<p>Also, personally I usually have to deal with D-Link or Linksys home routers. I generally only bother messing around with stuff if I can't make a connection to the internet at all.</p>\n"
+                        created_at: "2009-07-15T12:51:57.340Z"
+                      - displayname: "Ólafur Waage"
+                        body: "<p>Every router has it's original firmware stored somewhere on it.</p>\n\n<p>When you reset the router you overwrite the current firmware and config with the original one. What usually is fixing the problem is that the config is overwritten with the original one. But in some cases you have an updated router that isn't working for some reason.</p>\n"
+                        created_at: "2009-07-15T12:54:48.507Z"
 components:
   schemas:
     Version:
@@ -341,3 +535,60 @@ components:
           type: "array"
           items:
             type: "string"
+    PostBadges:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        title:
+          type: [ "string", "null" ]
+        type:
+          type: "string"
+        created_at:
+          type: "string"
+          format: "date-time"
+        position:
+          type: "integer"
+    PostsWithCommentsInfo:
+      type: "object"
+      properties:
+        post_id:
+          type: "integer"
+        title:
+          type: [ "string", "null" ]
+        displayname:
+          type: [ "string", "null" ]
+        text:
+          type: [ "string", "null" ]
+        created_at:
+          type: "string"
+          format: "date-time"
+        diff:
+          type: "string"
+        avg:
+          type: "string"
+    Comments:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+        displayname:
+          type: [ "string", "null" ]
+        body:
+          type: [ "string", "null" ]
+        text:
+          type: [ "string", "null" ]
+        score:
+          type: "integer"
+        position:
+          type: "integer"
+    PostThread:
+      type: "object"
+      properties:
+        displayname:
+          type: [ "string", "null" ]
+        body:
+          type: [ "string", "null" ]
+        created_at:
+          type: "string"
+          format: "date-time"
