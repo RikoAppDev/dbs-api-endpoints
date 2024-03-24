@@ -126,6 +126,7 @@ class DatabaseSchema {
                 "       title,\n" +
                 "       displayname,\n" +
                 "       text,\n" +
+                "       post_created_at,\n" +
                 "       created_at,\n" +
                 "       time_diff::text                                                      diff,\n" +
                 "       avg(time_diff) over (partition by post_id order by created_at)::text avg\n" +
@@ -133,6 +134,7 @@ class DatabaseSchema {
                 "             p.title,\n" +
                 "             u.displayname,\n" +
                 "             c.text,\n" +
+                "             p.creationdate                                                    post_created_at,\n" +
                 "             c.creationdate                                                    created_at,\n" +
                 "             c.creationdate - lag(c.creationdate, 1, p.creationdate)\n" +
                 "                              over (partition by p.id order by c.creationdate) time_diff,\n" +
@@ -460,13 +462,16 @@ class DatabaseSchema {
             val title = resultSet.getString("title")
             val displayName = resultSet.getString("displayname")
             val text = resultSet.getString("text")
+            val postCreatedAt = resultSet.getTimestamp("post_created_at").toInstant().let {
+                Instant.fromEpochMilliseconds(it.toEpochMilli())
+            }
             val createdAt = resultSet.getTimestamp("created_at").toInstant().let {
                 Instant.fromEpochMilliseconds(it.toEpochMilli())
             }
             val diff = resultSet.getString("diff")
             val avg = resultSet.getString("avg")
 
-            posts.add(PostsWithCommentsInfo(postId, title, displayName, text, createdAt, diff, avg))
+            posts.add(PostsWithCommentsInfo(postId, title, displayName, text, postCreatedAt, createdAt, diff, avg))
         }
 
         return@withContext posts

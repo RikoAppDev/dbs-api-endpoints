@@ -93,6 +93,7 @@ data class PostsWithCommentsInfo(
     val title: String?,
     val displayname: String?,
     val text: String?,
+    val post_created_at: Instant,
     val created_at: Instant,
     val diff: String,
     val avg: String

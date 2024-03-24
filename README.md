@@ -291,6 +291,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
             "displayname": "Ramhound",
             "text": "Use a different application.",
+            "post_created_at": "2014-12-21T00:44:33.810Z",
             "created_at": "2014-12-21T01:10:25.533Z",
             "diff": "00:25:51.723",
             "avg": "00:25:51.723"
@@ -300,6 +301,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
             "displayname": "Tyson",
             "text": "I'll bet there is a registry tweak for this windows 8 pre-installed app, but I couldn't locate it",
+            "post_created_at": "2014-12-21T00:44:33.810Z",
             "created_at": "2014-12-21T02:35:21.087Z",
             "diff": "01:24:55.554",
             "avg": "00:55:23.6385"
@@ -309,6 +311,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "Set Windows 8.1 Alarms app to ring forever till the user stop it",
             "displayname": "Omar",
             "text": "@Ramhound Could you please recommend any app similar to Windows' application? I love this good looking Windows app, and I won't install any other app if it really deserves taking my computer resources and have similar capabilities to the Windows' app.",
+            "post_created_at": "2014-12-21T00:44:33.810Z",
             "created_at": "2014-12-21T03:07:26.967Z",
             "diff": "00:32:05.88",
             "avg": "00:47:37.719"
@@ -318,6 +321,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
             "displayname": "John",
             "text": "Not here on any Windows 10 / 11 machine.  Run DISM / SFC and test .......   (1) Open cmd.exe with Run as Administrator.\n(2) DISM.exe /Online /Cleanup-image /StartComponentCleanup\n(3) DISM.exe /Online /Cleanup-Image /Restorehealth\n(4) SFC /SCANNOW\n(5) Restart when all the above is complete and test.",
+            "post_created_at": "2022-12-23T10:45:04.227Z",
             "created_at": "2022-12-23T13:50:46.843Z",
             "diff": "03:05:42.616",
             "avg": "03:05:42.616"
@@ -327,6 +331,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
             "displayname": "Nagev",
             "text": "Thanks, need some time to research and understand that before I try it.",
+            "post_created_at": "2022-12-23T10:45:04.227Z",
             "created_at": "2022-12-23T17:59:11.300Z",
             "diff": "04:08:24.457",
             "avg": "03:37:03.5365"
@@ -336,6 +341,7 @@ This project contains the implementation of endpoints for the Database Systems a
             "title": "How to stop Windows Alarms (Clock) app from asking access permissions on startup without saying yes or signing in?",
             "displayname": "John",
             "text": "DISM and SFC is not at all risky to run .  SFC may take some time if much to repair",
+            "post_created_at": "2022-12-23T10:45:04.227Z",
             "created_at": "2022-12-23T23:10:51.883Z",
             "diff": "05:11:40.583",
             "avg": "04:08:35.885333"
@@ -758,6 +764,7 @@ This project contains the implementation of endpoints for the Database Systems a
 - `title` (string or null)
 - `displayname` (string or null)
 - `text` (string or null)
+- `post_created_at` (string, date-time)
 - `created_at` (string, date-time)
 - `diff` (string)
 - `avg` (string)
