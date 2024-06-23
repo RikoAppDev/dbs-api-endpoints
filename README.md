@@ -805,7 +805,7 @@ setup in `build.gradle.kts` and `gradle.properties` files.
 
 #### Plugins
 
-```kotlin
+``` kotlin
 plugins {
     kotlin("jvm") version "1.9.22"
     id("io.ktor.plugin") version "2.3.8"
@@ -845,7 +845,7 @@ dependencies {
 
 ## Version
 
-Current version: 2.0.0
+Current version: 3.0.0
 
 ---
 
